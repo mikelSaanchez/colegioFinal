@@ -48,6 +48,7 @@ public class AlumnoRepository {
         }
         return listaAlumnos;
     }
+
     public int insertar(AlumnoDTO alumno) {
         String sql = "INSERT INTO alumnos (id, nombre, apellidos,id_municipio, familia_numerosa, activo) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
@@ -65,11 +66,12 @@ public class AlumnoRepository {
             filasAfectadas = ps.executeUpdate();
             connection.close();
         } catch (SQLException e) {
-            logger.error("Error al insertar el alumno {}", alumno.getId(),e);
+            logger.error("Error al insertar el alumno {}", alumno.getId(), e);
             cerrarConexion(connection);
         }
         return filasAfectadas;
     }
+
     public int actualizar(AlumnoDTO alumno) {
         String sql = "UPDATE alumnos SET nombre = ?, apellidos = ?, id_municipio = ?, "
                 + "familia_numerosa = ?, activo = ? WHERE id = ?";
@@ -89,6 +91,23 @@ public class AlumnoRepository {
         } catch (SQLException e) {
             logger.error("Error al actualizar el alumno {}",
                     alumno.getId(), e);
+            cerrarConexion(connection);
+        }
+        return filasAfectadas;
+    }
+
+    public int eliminar(String id) {
+        String sql = "DELETE FROM alumnos WHERE id = ?";
+        Connection connection = null;
+        int filasAfectadas = 0;
+        try {
+            connection = dataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, id);
+            filasAfectadas = ps.executeUpdate();
+            connection.close();
+        } catch (SQLException e) {
+            logger.error("Error al eliminar el alumno {}", id, e);
             cerrarConexion(connection);
         }
         return filasAfectadas;

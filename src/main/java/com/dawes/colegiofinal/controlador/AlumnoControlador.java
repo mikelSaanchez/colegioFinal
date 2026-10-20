@@ -88,5 +88,37 @@ public class AlumnoControlador {
         return "alumnos/modificar";
     }
 
+    @GetMapping("/formularioBorrarAlumnos")
+    public String mostrarBusquedaBorrar() {
+        return "alumnos/borrar";
+    }
+
+    @PostMapping("/formularioBorrarAlumnos")
+    public String buscarParaBorrar(@RequestParam String nombre,
+                                   @RequestParam String apellido,
+                                   @RequestParam(required = false) Boolean
+                                           familiaNumerosa,
+                                   @RequestParam(required = false) Boolean
+                                           activo,
+                                   Model model) {
+        boolean filtroFamiliaNumerosa = familiaNumerosa != null &&
+                familiaNumerosa;
+        boolean filtroActivo = activo != null && activo;
+        ArrayList<AlumnoDTO> listaAlumnos =
+                alumnoService.buscarAlumnos(nombre, apellido,
+                        filtroFamiliaNumerosa, filtroActivo);
+        model.addAttribute("listaAlumnos", listaAlumnos);
+        return "alumnos/borrar";
+    }
+
+    @PostMapping("/{id}/eliminar")
+    public String eliminarAlumno(@PathVariable String id, Model model) {
+        int filasAfectadas = alumnoService.eliminarAlumno(id);
+        model.addAttribute("resultado", filasAfectadas == 1);
+        return "alumnos/borrar";
+    }
+
 }
+
+
 
