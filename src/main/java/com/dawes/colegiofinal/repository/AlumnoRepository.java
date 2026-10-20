@@ -48,6 +48,28 @@ public class AlumnoRepository {
         }
         return listaAlumnos;
     }
+    public int insertar(AlumnoDTO alumno) {
+        String sql = "INSERT INTO alumnos (id, nombre, apellidos,id_municipio, familia_numerosa, activo) "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
+        Connection connection = null;
+        int filasAfectadas = 0;
+        try {
+            connection = dataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, alumno.getId());
+            ps.setString(2, alumno.getNombre());
+            ps.setString(3, alumno.getApellido());
+            ps.setInt(4, alumno.getIdMunicipio());
+            ps.setBoolean(5, alumno.isFamiliaNumerosa());
+            ps.setBoolean(6, alumno.isActivo());
+            filasAfectadas = ps.executeUpdate();
+            connection.close();
+        } catch (SQLException e) {
+            logger.error("Error al insertar el alumno {}", alumno.getId(),e);
+            cerrarConexion(connection);
+        }
+        return filasAfectadas;
+    }
 
     private AlumnoDTO mapearAlumno(ResultSet rs) throws SQLException {
         return new AlumnoDTO(
