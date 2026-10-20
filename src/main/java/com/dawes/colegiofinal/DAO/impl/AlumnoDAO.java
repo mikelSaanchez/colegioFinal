@@ -23,7 +23,11 @@ public class AlumnoDAO implements IAlumnoDAO {
     @Override
     public int insertarAlumno(AlumnoDTO alumno) {
         return alumnoRepository.insertar(alumno);
-
     }
+    @Override
+    public int actualizarAlumno(AlumnoDTO alumno) {
+        return alumnoRepository.actualizar(alumno);
+    }
+
 }
 

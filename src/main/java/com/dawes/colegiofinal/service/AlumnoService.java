@@ -29,4 +29,8 @@ public class AlumnoService {
     public ArrayList<DesplegableDTO> obtenerDesplegableMunicipios() {
         return municipioDAO.listarParaDesplegable();
     }
+    public int actualizarAlumno(AlumnoDTO alumno) {
+        return alumnoDAO.actualizarAlumno(alumno);
+    }
+
 }

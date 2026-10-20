@@ -55,5 +55,38 @@ public class AlumnoControlador {
         model.addAttribute("desplegableMunicipios", alumnoService.obtenerDesplegableMunicipios());
         return "alumnos/insertar";
     }
+
+    @GetMapping("/formularioActualizarAlumnos")
+    public String mostrarBusquedaModificar(Model model) {
+        model.addAttribute("desplegableMunicipios", alumnoService.obtenerDesplegableMunicipios());
+        return "alumnos/modificar";
+    }
+
+    @PostMapping("/formularioActualizarAlumnos")
+    public String buscarParaModificar(@RequestParam String nombre,
+                                      @RequestParam String apellido,
+                                      @RequestParam(required = false) Boolean familiaNumerosa,
+                                      @RequestParam(required = false) Boolean activo,
+                                      Model model) {
+        boolean filtroFamiliaNumerosa = familiaNumerosa != null && familiaNumerosa;
+        boolean filtroActivo = activo != null && activo;
+        ArrayList<AlumnoDTO> listaAlumnos = alumnoService.buscarAlumnos(nombre, apellido, filtroFamiliaNumerosa, filtroActivo);
+        model.addAttribute("listaAlumnos", listaAlumnos);
+        model.addAttribute("desplegableMunicipios", alumnoService.obtenerDesplegableMunicipios());
+        model.addAttribute("alumno", new AlumnoDTO());
+        return "alumnos/modificar";
+    }
+
+    @PostMapping("/{id}/modificar")
+    public String actualizarAlumno(@PathVariable String id,
+                                   @ModelAttribute("alumno") AlumnoDTO alumno,
+                                   Model model) {
+        alumno.setId(id);
+        int filasAfectadas = alumnoService.actualizarAlumno(alumno);
+        model.addAttribute("resultado", filasAfectadas == 1);
+        model.addAttribute("desplegableMunicipios", alumnoService.obtenerDesplegableMunicipios());
+        return "alumnos/modificar";
+    }
+
 }
 

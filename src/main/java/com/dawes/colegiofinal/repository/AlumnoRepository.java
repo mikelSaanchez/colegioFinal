@@ -70,6 +70,30 @@ public class AlumnoRepository {
         }
         return filasAfectadas;
     }
+    public int actualizar(AlumnoDTO alumno) {
+        String sql = "UPDATE alumnos SET nombre = ?, apellidos = ?, id_municipio = ?, "
+                + "familia_numerosa = ?, activo = ? WHERE id = ?";
+        Connection connection = null;
+        int filasAfectadas = 0;
+        try {
+            connection = dataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, alumno.getNombre());
+            ps.setString(2, alumno.getApellido());
+            ps.setInt(3, alumno.getIdMunicipio());
+            ps.setBoolean(4, alumno.isFamiliaNumerosa());
+            ps.setBoolean(5, alumno.isActivo());
+            ps.setString(6, alumno.getId());
+            filasAfectadas = ps.executeUpdate();
+            connection.close();
+        } catch (SQLException e) {
+            logger.error("Error al actualizar el alumno {}",
+                    alumno.getId(), e);
+            cerrarConexion(connection);
+        }
+        return filasAfectadas;
+    }
+
 
     private AlumnoDTO mapearAlumno(ResultSet rs) throws SQLException {
         return new AlumnoDTO(
